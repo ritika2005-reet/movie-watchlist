@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>MovieHub - Movie Discovery & Watchlist</title>
+
+    <meta
+      name="description"
+      content="Discover trending movies, search movies, filter by genre and rating, and build your personal watchlist."
+    />
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="container navbar">
+        <a href="/" class="logo">🎬 MovieHub</a>
+
+        <nav class="nav-links">
+          <a href="#discover">Discover</a>
+          <a href="#watchlist">Watchlist</a>
+          <a href="#login">Login</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="container">
+          <p class="eyebrow">MOVIE DISCOVERY PLATFORM</p>
+
+          <h1>Find your next favourite movie.</h1>
+
+          <p class="hero-text">
+            Search trending movies, filter by genre and rating, and create
+            your personal watchlist.
+          </p>
+
+          <a href="#discover" class="hero-button">
+            Explore Movies
+          </a>
+        </div>
+      </section>
+
+      <!-- Discovery Section -->
+      <section id="discover" class="discover-section">
+        <div class="container">
+
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">DISCOVER</p>
+              <h2>Trending Movies</h2>
+            </div>
+
+            <button id="watchlistButton" class="secondary-button">
+              My Watchlist
+            </button>
+          </div>
+
+          <!-- Search and Filters -->
+          <form id="filterForm" class="filters">
+
+            <div class="filter-group search-group">
+              <label for="searchInput">Search</label>
+
+              <input
+                type="text"
+                id="searchInput"
+                name="search"
+                placeholder="Search for a movie..."
+              />
+            </div>
+
+            <div class="filter-group">
+              <label for="genreSelect">Genre</label>
+
+              <select id="genreSelect" name="genre">
+                <option value="">All Genres</option>
+                <option value="28">Action</option>
+                <option value="12">Adventure</option>
+                <option value="16">Animation</option>
+                <option value="35">Comedy</option>
+                <option value="80">Crime</option>
+                <option value="18">Drama</option>
+                <option value="14">Fantasy</option>
+                <option value="27">Horror</option>
+                <option value="9648">Mystery</option>
+                <option value="10749">Romance</option>
+                <option value="878">Science Fiction</option>
+                <option value="53">Thriller</option>
+              </select>
+            </div>
+
+            <div class="filter-group rating-group">
+              <label for="ratingInput">
+                Minimum Rating:
+                <span id="ratingValue">0</span>
+              </label>
+
+              <input
+                type="range"
+                id="ratingInput"
+                name="min_rating"
+                min="0"
+                max="10"
+                step="0.5"
+                value="0"
+              />
+            </div>
+
+            <div class="filter-group">
+              <label for="sortSelect">Sort By</label>
+
+              <select id="sortSelect" name="sort">
+                <option value="popularity">Popularity</option>
+                <option value="release_date">Release Date</option>
+                <option value="rating">Rating</option>
+              </select>
+            </div>
+
+            <button type="submit" class="primary-button">
+              Apply Filters
+            </button>
+
+            <button
+              type="button"
+              id="clearFilters"
+              class="clear-button"
+            >
+              Clear
+            </button>
+          </form>
+
+          <!-- Status -->
+          <div id="statusMessage" class="status-message">
+            Loading movies...
+          </div>
+
+          <!-- Movie Grid -->
+          <div id="movieGrid" class="movie-grid">
+            <!-- Movies will be inserted here using JavaScript -->
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Watchlist -->
+      <section id="watchlist" class="watchlist-section">
+        <div class="container">
+
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">YOUR COLLECTION</p>
+              <h2>My Watchlist</h2>
+            </div>
+          </div>
+
+          <div id="watchlistGrid" class="movie-grid">
+            <p class="empty-message">
+              Your watchlist is empty. Add movies you want to watch.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Login -->
+      <section id="login" class="login-section">
+        <div class="container">
+
+          <div class="login-card">
+            <p class="eyebrow">ACCOUNT</p>
+
+            <h2>Login</h2>
+
+            <p>
+              Sign in to manage your movie watchlist.
+            </p>
+
+            <form id="loginForm">
+
+              <div class="filter-group">
+                <label for="username">TMDB Username</label>
+
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  placeholder="Enter username"
+                  required
+                />
+              </div>
+
+              <div class="filter-group">
+                <label for="password">Password</label>
+
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Enter password"
+                  required
+                />
+              </div>
+
+              <button type="submit" class="primary-button">
+                Login
+              </button>
+
+              <p id="loginMessage" class="status-message"></p>
+
+            </form>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>© 2026 MovieHub. Built with HTML, CSS & JavaScript.</p>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

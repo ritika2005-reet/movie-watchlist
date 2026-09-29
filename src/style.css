@@ -1,0 +1,422 @@
+/* =========================
+   GLOBAL
+========================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(circle at top left, #243b55 0%, transparent 35%),
+    radial-gradient(circle at bottom right, #1b1b3a 0%, transparent 35%),
+    #080b12;
+  color: #ffffff;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.container {
+  width: min(1200px, 92%);
+  margin: auto;
+}
+
+
+/* =========================
+   HEADER / NAVBAR
+========================= */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(8, 11, 18, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.site-header .container {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+nav {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+nav a {
+  color: #cfd4df;
+  font-weight: 600;
+  transition: 0.25s;
+}
+
+nav a:hover {
+  color: #ffffff;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+  min-height: 430px;
+  display: flex;
+  align-items: center;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(8,11,18,0.98) 0%,
+      rgba(8,11,18,0.75) 50%,
+      rgba(8,11,18,0.3) 100%
+    );
+}
+
+.hero .container {
+  padding: 80px 0;
+}
+
+.hero h1 {
+  font-size: clamp(42px, 6vw, 72px);
+  line-height: 1.05;
+  max-width: 850px;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  color: #b8c0ce;
+  font-size: 19px;
+  max-width: 700px;
+  margin-bottom: 30px;
+}
+
+
+/* =========================
+   SECTIONS
+========================= */
+
+.discover-section,
+.watchlist-section,
+.login-section {
+  padding: 70px 0;
+}
+
+.discover-section {
+  background: rgba(255,255,255,0.015);
+}
+
+.watchlist-section {
+  background: rgba(255,255,255,0.025);
+}
+
+.login-section {
+  background: rgba(255,255,255,0.015);
+}
+
+.section-heading {
+  margin-bottom: 30px;
+}
+
+.section-heading h2 {
+  font-size: 34px;
+  margin-top: 5px;
+}
+
+.eyebrow {
+  color: #7dd3fc;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+
+/* =========================
+   FILTER BOX
+========================= */
+
+#filterForm {
+  background: rgba(255,255,255,0.055);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 18px;
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.filter-group label {
+  font-weight: 700;
+  color: #e8ecf3;
+}
+
+.filter-group input[type="text"],
+.filter-group input[type="password"],
+.filter-group select {
+  width: 100%;
+  max-width: 420px;
+  padding: 13px 15px;
+  border-radius: 10px;
+  border: 1px solid #394355;
+  background: #111722;
+  color: white;
+  outline: none;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56,189,248,0.12);
+}
+
+.rating-group input[type="range"] {
+  width: 100%;
+  max-width: 420px;
+  accent-color: #38bdf8;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.primary-button,
+.clear-button,
+.watchlist-button,
+.remove-button {
+  border: none;
+  border-radius: 9px;
+  padding: 11px 17px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: 0.25s;
+}
+
+.primary-button {
+  background: #38bdf8;
+  color: #061018;
+}
+
+.primary-button:hover {
+  transform: translateY(-2px);
+  background: #67d3ff;
+}
+
+.clear-button {
+  background: #252d3a;
+  color: white;
+  margin-left: 8px;
+}
+
+.clear-button:hover {
+  background: #374151;
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+.status-message {
+  margin: 18px 0;
+  color: #aeb8c8;
+  font-weight: 600;
+}
+
+
+/* =========================
+   MOVIE GRID
+========================= */
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+}
+
+
+/* =========================
+   MOVIE CARD
+========================= */
+
+.movie-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 420px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #151b28, #0d111a);
+  border: 1px solid rgba(255,255,255,0.09);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.movie-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 45px rgba(0,0,0,0.5);
+}
+
+.movie-poster {
+  width: 100%;
+  height: 270px;
+  object-fit: cover;
+  display: block;
+  background: linear-gradient(135deg, #243b55, #141e30);
+}
+
+.movie-info {
+  padding: 18px;
+}
+
+.movie-info h3 {
+  font-size: 21px;
+  margin-bottom: 8px;
+}
+
+.movie-meta {
+  color: #aeb8c8;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.movie-rating {
+  color: #ffd43b;
+  font-weight: 800;
+  margin-bottom: 14px;
+}
+
+.movie-card button {
+  width: 100%;
+}
+
+
+/* =========================
+   EMPTY WATCHLIST
+========================= */
+
+.empty-message {
+  text-align: center;
+  padding: 55px 20px;
+  border: 1px dashed #394355;
+  border-radius: 16px;
+  color: #8f9aaa;
+  background: rgba(255,255,255,0.025);
+}
+
+
+/* =========================
+   LOGIN
+========================= */
+
+.login-card {
+  max-width: 520px;
+  margin: auto;
+  padding: 35px;
+  background: rgba(255,255,255,0.055);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+.login-card h2 {
+  font-size: 32px;
+  margin: 8px 0 12px;
+}
+
+.login-card > p {
+  color: #aeb8c8;
+  margin-bottom: 25px;
+}
+
+.login-card .primary-button {
+  width: 100%;
+}
+
+#loginMessage {
+  margin-top: 15px;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.site-footer {
+  padding: 30px 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  background: #06080d;
+  color: #7f8999;
+  text-align: center;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1000px) {
+  .movie-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 750px) {
+  .movie-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero h1 {
+    font-size: 45px;
+  }
+
+  nav {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 500px) {
+  .movie-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero h1 {
+    font-size: 38px;
+  }
+
+  .login-card {
+    padding: 22px;
+  }
+}
