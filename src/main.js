@@ -267,8 +267,8 @@ function displayWatchlist() {
 
     card.innerHTML = `
       <div class="movie-poster">
-        <span>${movie.emoji}</span>
-      </div>
+  <img src="${movie.poster}" alt="${movie.title} poster">
+</div>
 
       <div class="movie-info">
 
@@ -334,8 +334,9 @@ function applyFilters(event) {
   const searchText =
     searchInput.value.trim().toLowerCase();
 
-  const selectedGenre =
-    genreSelect.value;
+  const selectedGenres = Array.from(
+  genreSelect.selectedOptions
+).map(option => option.value);
 
   const minimumRating =
     Number(ratingInput.value);
@@ -352,8 +353,9 @@ function applyFilters(event) {
         .includes(searchText);
 
     const matchesGenre =
-      selectedGenre === "" ||
-      movie.genreId === selectedGenre;
+
+  selectedGenres.length === 0 ||
+  selectedGenres.includes(String(movie.genreId));
 
     const matchesRating =
       movie.rating >= minimumRating;
@@ -399,6 +401,31 @@ function applyFilters(event) {
 
   statusMessage.textContent =
    `${filteredMovies.length} movie(s) found.`;
+   const params = new URLSearchParams();
+
+if (searchText) {
+  params.set("search", searchText);
+}
+
+if (selectedGenres.length > 0) {
+  params.set("genre", selectedGenres.join(","));
+}
+
+if (minimumRating > 0) {
+  params.set("rating", minimumRating);
+}
+
+if (sortBy !== "popularity") {
+  params.set("sort", sortBy);
+}
+
+window.history.replaceState(
+  {},
+  "",
+  params.toString()
+    ? "?" + params.toString()
+    : window.location.pathname
+);
 }
 
 
@@ -428,6 +455,8 @@ filterForm.addEventListener(
 // CLEAR FILTERS
 // ------------------------------
 
+
+
 clearFilters.addEventListener("click", () => {
 
   searchInput.value = "";
@@ -441,7 +470,6 @@ clearFilters.addEventListener("click", () => {
   sortSelect.value = "popularity";
 
   applyFilters();
-
 });
 
 
@@ -493,7 +521,20 @@ loginForm.addEventListener("submit", event => {
 // INITIAL LOAD
 // ------------------------------
 
-displayMovies(movies);
+// RESTORE FILTERS FROM URL
+const urlParams = new URLSearchParams(window.location.search);
+
+searchInput.value = urlParams.get("search") || "";
+
+genreSelect.value = urlParams.get("genre") || "";
+
+ratingInput.value = urlParams.get("rating") || "0";
+ratingValue.textContent = ratingInput.value;
+
+sortSelect.value = urlParams.get("sort") || "popularity";
+
+applyFilters();
+
 
 displayWatchlist();
 
@@ -517,10 +558,37 @@ async function testTMDB() {
 
     const data = await response.json();
 
-    console.log(
-      "TMDB connection successful:",
-      data.results
-    );
+const trendingMovies = data.results.map(movie => ({
+  id: movie.id,
+  title: movie.title,
+  genre: "Movie",
+  genreId: movie.genre_ids[0] || "",
+  rating: movie.vote_average,
+  year: movie.release_date
+    ? Number(movie.release_date.slice(0, 4))
+    : 0,
+  emoji: "🎬",
+  poster: movie.poster_path
+    ? "https://image.tmdb.org/t/p/w500" + movie.poster_path
+    : ""
+}));
+
+movies.splice(
+  0,
+  movies.length,
+  ...trendingMovies
+);
+
+displayMovies(movies);
+
+statusMessage.textContent =
+ ` ${movies.length} trending movies loaded from TMDB.;`
+
+console.log(
+  "TMDB connection successful:",
+  data.results
+);
+
   } catch (error) {
     console.error(
       "TMDB connection failed:",
@@ -528,5 +596,29 @@ async function testTMDB() {
     );
   }
 }
+
+const urlSearch = urlParams.get("search");
+const urlGenre = urlParams.get("genre");
+const urlRating = urlParams.get("rating");
+const urlSort = urlParams.get("sort");
+
+if (urlSearch) {
+  searchInput.value = urlSearch;
+}
+
+if (urlGenre) {
+  genreSelect.value = urlGenre;
+}
+
+if (urlRating) {
+  ratingInput.value = urlRating;
+  ratingValue.textContent = urlRating;
+}
+
+if (urlSort) {
+  sortSelect.value = urlSort;
+}
+
+applyFilters();
 
 testTMDB();
