@@ -1,16 +1,8 @@
 import "./style.css" ;
-const urlParams = new URLSearchParams(window.location.search);
 
-const savedSearch = urlParams.get("search") || "";
-const savedGenre = urlParams.get("genre") || "all";
-const savedRating = Number(urlParams.get("rating")) || 0;
-const savedSort = urlParams.get("sort") || "popularity";
+const TMDB_TOKEN = import.meta.env.VITE_TMDB_API_TOKEN;
+const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
-searchInput.value = savedSearch;
-genreSelect.value = savedGenre;
-ratingInput.value = savedRating;
-ratingValue.textContent = savedRating.toFixed(1);
-sortSelect.value = savedSort;
 const movies = [
   {
     id: 1,
@@ -143,9 +135,11 @@ const loginForm = document.querySelector("#loginForm");
 const loginMessage = document.querySelector("#loginMessage");
 
 
+
 // ------------------------------
 // DISPLAY MOVIES
 // ------------------------------
+
 
 function displayMovies(movieList) {
 
@@ -504,3 +498,35 @@ displayMovies(movies);
 displayWatchlist();
 
 statusMessage.textContent = movies.length + " movies available.";
+
+async function testTMDB() {
+  try {
+    const response = await fetch(
+      TMDB_BASE_URL + "/trending/movie/day",
+      {
+        headers: {
+          Authorization: "Bearer " + TMDB_TOKEN,
+          accept: "application/json"
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("TMDB error: " + response.status);
+    }
+
+    const data = await response.json();
+
+    console.log(
+      "TMDB connection successful:",
+      data.results
+    );
+  } catch (error) {
+    console.error(
+      "TMDB connection failed:",
+      error
+    );
+  }
+}
+
+testTMDB();
