@@ -1,11 +1,9 @@
-/* =========================
-   GLOBAL
-========================= */
+/* MovieHub - simple student project */
 
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 html {
@@ -13,414 +11,470 @@ html {
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  background:
-  linear-gradient(rgba(5, 10, 25, 0.82), rgba(5, 10, 25, 0.94)),
-  radial-gradient(circle at 15% 20%, #2563eb, transparent 35%),
-  radial-gradient(circle at 85% 25%, #7c3aed, transparent 35%),
-  radial-gradient(circle at 50% 90%, #0891b2, transparent 35%),
-  #050816;
-
-background-attachment: fixed;
+  font-family: Arial, sans-serif;
+  background: #0b0f17;
   color: #ffffff;
-  min-height: 100vh;
-  line-height: 1.6;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button,
-input,
-select {
-  font: inherit;
+  line-height: 1.5;
 }
 
 .container {
-  width: min(1200px, 92%);
+  width: 90%;
+  max-width: 1200px;
   margin: auto;
 }
 
 
-/* =========================
-   HEADER / NAVBAR
-========================= */
+/* Header */
 
 .site-header {
+  background: #111722;
+  border-bottom: 1px solid #252c38;
   position: sticky;
   top: 0;
-  z-index: 1000;
-  background: rgba(8, 11, 18, 0.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  z-index: 10;
 }
 
-.site-header .container {
-  min-height: 72px;
+.navbar {
+  min-height: 70px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 25px;
 }
 
 .logo {
-  font-size: 28px;
-  font-weight: 800;
   color: #ffffff;
+  text-decoration: none;
+  font-size: 22px;
+  font-weight: bold;
 }
 
-nav {
+.nav-links {
   display: flex;
   gap: 25px;
-  align-items: center;
 }
 
-nav a {
-  color: #cfd4df;
-  font-weight: 600;
-  transition: 0.25s;
+.nav-links a {
+  color: #cbd2dc;
+  text-decoration: none;
+  font-size: 15px;
 }
 
-nav a:hover {
+.nav-links a:hover {
   color: #ffffff;
 }
 
 
-/* =========================
-   HERO
-========================= */
+/* Hero */
 
 .hero {
   min-height: 430px;
   display: flex;
   align-items: center;
+
   background:
     linear-gradient(
       90deg,
-      rgba(8,11,18,0.98) 0%,
-      rgba(8,11,18,0.75) 50%,
-      rgba(8,11,18,0.3) 100%
-    );
+      rgba(8, 11, 18, 0.95),
+      rgba(8, 11, 18, 0.65),
+      rgba(8, 11, 18, 0.25)
+    ),
+    url("https://image.tmdb.org/t/p/w1280/8ZTVqvKDQ8emSGUEMjsS4yHAwrp.jpg");
+
+  background-size: cover;
+  background-position: center;
 }
 
-.hero .container {
-  padding: 80px 0;
+.hero-content {
+  padding: 70px 0;
+}
+
+.eyebrow {
+  color: #8fb7ff;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
 }
 
 .hero h1 {
-  font-size: clamp(42px, 6vw, 72px);
-  line-height: 1.05;
-  max-width: 850px;
+  max-width: 650px;
+  font-size: 52px;
+  line-height: 1.1;
   margin-bottom: 20px;
 }
 
-.hero p {
-  color: #b8c0ce;
-  font-size: 19px;
-  max-width: 700px;
-  margin-bottom: 30px;
+.hero-text {
+  max-width: 560px;
+  color: #d0d5dd;
+  font-size: 17px;
+  margin-bottom: 28px;
 }
 
 
-/* =========================
-   SECTIONS
-========================= */
+/* Buttons */
+
+.primary-button,
+.secondary-button,
+.clear-button,
+.watchlist-btn {
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.primary-button {
+  display: inline-block;
+  background: #4f8cff;
+  color: white;
+  text-decoration: none;
+  padding: 12px 20px;
+}
+
+.primary-button:hover {
+  background: #3d78df;
+}
+
+.secondary-button {
+  background: #202938;
+  color: white;
+  padding: 11px 17px;
+}
+
+.secondary-button:hover {
+  background: #2c3749;
+}
+
+.clear-button {
+  background: #202630;
+  color: white;
+  padding: 12px 20px;
+}
+
+.clear-button:hover {
+  background: #303744;
+}
+
+
+/* Sections */
 
 .discover-section,
 .watchlist-section,
 .login-section {
-  padding: 70px 0;
+  padding: 65px 0;
 }
 
 .discover-section {
-  background: rgba(255,255,255,0.015);
+  background: #0b0f17;
 }
 
 .watchlist-section {
-  background: rgba(255,255,255,0.025);
+  background: #10151f;
 }
 
 .login-section {
-  background: rgba(255,255,255,0.015);
+  background: #0b0f17;
 }
 
 .section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
   margin-bottom: 30px;
 }
 
 .section-heading h2 {
-  font-size: 34px;
-  margin-top: 5px;
-}
-
-.eyebrow {
-  color: #7dd3fc;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 2px;
+  font-size: 30px;
 }
 
 
-/* =========================
-   FILTER BOX
-========================= */
+/* Filters */
 
-#filterForm {
-  background: rgba(255,255,255,0.055);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 18px;
-  padding: 25px;
-  margin-bottom: 30px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+.filters {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1.2fr 1.2fr;
+  gap: 18px;
+  padding: 22px;
+  background: #151b26;
+  border: 1px solid #252d3a;
+  border-radius: 12px;
+  margin-bottom: 25px;
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 18px;
+  gap: 7px;
 }
 
 .filter-group label {
-  font-weight: 700;
-  color: #e8ecf3;
+  font-size: 14px;
+  font-weight: bold;
+  color: #e4e8ee;
 }
 
-.filter-group input[type="text"],
-.filter-group input[type="password"],
+.filter-group input,
 .filter-group select {
   width: 100%;
-  max-width: 420px;
-  padding: 13px 15px;
-  border-radius: 10px;
-  border: 1px solid #394355;
-  background: #111722;
+  background: #0e131c;
   color: white;
+  border: 1px solid #303846;
+  border-radius: 7px;
+  padding: 11px;
   outline: none;
 }
 
 .filter-group input:focus,
 .filter-group select:focus {
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 3px rgba(56,189,248,0.12);
+  border-color: #4f8cff;
 }
 
-.rating-group input[type="range"] {
-  width: 100%;
-  max-width: 420px;
-  accent-color: #38bdf8;
+.filter-group select[multiple] {
+  min-height: 105px;
 }
 
-
-/* =========================
-   BUTTONS
-========================= */
-
-.primary-button,
-.clear-button,
-.watchlist-button,
-.remove-button {
-  border: none;
-  border-radius: 9px;
-  padding: 11px 17px;
-  cursor: pointer;
-  font-weight: 700;
-  transition: 0.25s;
+.filter-group small {
+  color: #8f98a8;
+  font-size: 11px;
 }
 
-.primary-button {
-  background: #38bdf8;
-  color: #061018;
+.rating-group input {
+  padding: 0;
+  margin-top: 9px;
 }
 
-.primary-button:hover {
-  transform: translateY(-2px);
-  background: #67d3ff;
-}
-
-.clear-button {
-  background: #252d3a;
-  color: white;
-  margin-left: 8px;
-}
-
-.clear-button:hover {
-  background: #374151;
+.filter-buttons {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
 }
 
 
-/* =========================
-   STATUS
-========================= */
+/* Status */
 
 .status-message {
-  margin: 18px 0;
-  color: #aeb8c8;
-  font-weight: 600;
+  color: #aeb7c5;
+  margin: 15px 0 25px;
+  font-size: 14px;
+}
+
+.success-message {
+  color: #6ee7a0;
 }
 
 
-/* =========================
-   MOVIE GRID
-========================= */
+/* Movie Grid */
 
 .movie-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
+  gap: 22px;
 }
 
-
-/* =========================
-   MOVIE CARD
-========================= */
-
 .movie-card {
-  position: relative;
+  background: #151b26;
+  border: 1px solid #252d3a;
+  border-radius: 12px;
   overflow: hidden;
-  min-height: 420px;
-  border-radius: 18px;
-  background: linear-gradient(145deg, #151b28, #0d111a);
-  border: 1px solid rgba(255,255,255,0.09);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
-  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .movie-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 45px rgba(0,0,0,0.5);
+  transform: translateY(-3px);
+  transition: 0.2s;
+  border-color: #3b4657;
 }
 
 .movie-poster {
   width: 100%;
-  height: 270px;
+  height: 320px;
   object-fit: cover;
   display: block;
-  background: linear-gradient(135deg, #243b55, #141e30);
+  background: #202633;
 }
 
 .movie-info {
-  padding: 18px;
+  padding: 17px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .movie-info h3 {
-  font-size: 21px;
-  margin-bottom: 8px;
+  font-size: 18px;
+  margin-bottom: 7px;
 }
 
 .movie-meta {
-  color: #aeb8c8;
-  font-size: 14px;
-  margin-bottom: 8px;
+  color: #aeb7c5;
+  font-size: 12px;
+  margin-bottom: 6px;
 }
 
-.movie-rating {
-  color: #ffd43b;
-  font-weight: 800;
-  margin-bottom: 14px;
+.movie-genre {
+  color: #8fb7ff;
+  font-size: 12px;
+  margin-bottom: 10px;
 }
 
-.movie-card button {
+.movie-description {
+  color: #b9c0cb;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  flex: 1;
+}
+
+.watchlist-btn {
   width: 100%;
+  padding: 10px;
+  background: #273143;
+  color: white;
 }
 
-
-/* =========================
-   EMPTY WATCHLIST
-========================= */
+.watchlist-btn:hover {
+  background: #354258;
+}
 
 .empty-message {
-  text-align: center;
-  padding: 55px 20px;
-  border: 1px dashed #394355;
-  border-radius: 16px;
-  color: #8f9aaa;
-  background: rgba(255,255,255,0.025);
+  color: #aeb7c5;
+  padding: 25px 0;
 }
 
 
-/* =========================
-   LOGIN
-========================= */
+/* Login */
 
 .login-card {
-  max-width: 520px;
+  max-width: 480px;
   margin: auto;
-  padding: 35px;
-  background: rgba(255,255,255,0.055);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 20px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  padding: 30px;
+  background: #151b26;
+  border: 1px solid #252d3a;
+  border-radius: 12px;
 }
 
 .login-card h2 {
-  font-size: 32px;
-  margin: 8px 0 12px;
+  font-size: 30px;
+  margin-bottom: 8px;
 }
 
-.login-card > p {
-  color: #aeb8c8;
+.login-card > p:not(.eyebrow) {
+  color: #aeb7c5;
   margin-bottom: 25px;
 }
 
-.login-card .primary-button {
-  width: 100%;
+#loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-#loginMessage {
-  margin-top: 15px;
-}
 
-
-/* =========================
-   FOOTER
-========================= */
+/* Footer */
 
 .site-footer {
   padding: 30px 0;
-  border-top: 1px solid rgba(255,255,255,0.08);
-  background: #06080d;
-  color: #7f8999;
+  background: #080b11;
+  border-top: 1px solid #252d3a;
   text-align: center;
 }
 
+.site-footer p {
+  color: #7f8998;
+  font-size: 12px;
+  margin: 5px 0;
+}
 
-/* =========================
-   RESPONSIVE
-========================= */
+
+/* Tablet */
 
 @media (max-width: 1000px) {
+
   .movie-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+
+  .filters {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
+
+/* Small tablet */
+
 @media (max-width: 750px) {
+
+  .navbar {
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    padding: 15px 0;
+  }
+
+  .nav-links {
+    gap: 18px;
+  }
+
+  .hero h1 {
+    font-size: 40px;
+  }
+
   .movie-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .hero h1 {
-    font-size: 45px;
+  .movie-poster {
+    height: 300px;
   }
 
-  nav {
-    gap: 12px;
+  .filters {
+    grid-template-columns: 1fr;
   }
 }
 
+
+/* Mobile */
+
 @media (max-width: 500px) {
+
+  .container {
+    width: 92%;
+  }
+
+  .hero {
+    min-height: 380px;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .hero-text {
+    font-size: 15px;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .movie-grid {
     grid-template-columns: 1fr;
   }
 
-  .hero h1 {
-    font-size: 38px;
+  .movie-poster {
+    height: 400px;
   }
 
-  .login-card {
-    padding: 22px;
+  .filter-buttons {
+    flex-direction: column;
+  }
+
+  .filter-buttons button {
+    width: 100%;
   }
 }

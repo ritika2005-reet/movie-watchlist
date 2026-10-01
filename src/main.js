@@ -1,549 +1,95 @@
-import "./style.css" ;
+import "./style.css";
 
 const TMDB_TOKEN = import.meta.env.VITE_TMDB_API_TOKEN;
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
-const movies = [
+const movieGrid = document.getElementById("movieGrid");
+const watchlistGrid = document.getElementById("watchlistGrid");
+const statusMessage = document.getElementById("statusMessage");
+
+const filterForm = document.getElementById("filterForm");
+const searchInput = document.getElementById("searchInput");
+const genreSelect = document.getElementById("genreSelect");
+const ratingInput = document.getElementById("ratingInput");
+const ratingValue = document.getElementById("ratingValue");
+const sortSelect = document.getElementById("sortSelect");
+const clearFilters = document.getElementById("clearFilters");
+
+const watchlistButton = document.getElementById("watchlistButton");
+
+const loginForm = document.getElementById("loginForm");
+const loginMessage = document.getElementById("loginMessage");
+
+
+let movies = [
   {
     id: 1,
     title: "Inception",
-    genre: "Science Fiction",
-    genreId: "878",
-    rating: 8.8,
-    year: 2010,
-    emoji: "🌀",
-    poster: "https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",
+    overview: "A skilled thief enters people's dreams to steal secrets.",
+    poster_path: null,
+    release_date: "2010-07-16",
+    vote_average: 8.4,
+    popularity: 90,
+    genre_ids: [28, 878]
   },
   {
     id: 2,
-    title: "The Dark Knight",
-    genre: "Action",
-    genreId: "28",
-    rating: 9.0,
-    year: 2008,
-    emoji: "🦇"
+    title: "Interstellar",
+    overview: "A group of astronauts travels through space to find a new home.",
+    poster_path: null,
+    release_date: "2014-11-07",
+    vote_average: 8.6,
+    popularity: 88,
+    genre_ids: [12, 18, 878]
   },
   {
     id: 3,
-    title: "Interstellar",
-    genre: "Science Fiction",
-    genreId: "878",
-    rating: 8.7,
-    year: 2014,
-    emoji: "🚀"
+    title: "The Dark Knight",
+    overview: "Batman faces a dangerous criminal who creates chaos in Gotham.",
+    poster_path: null,
+    release_date: "2008-07-18",
+    vote_average: 8.5,
+    popularity: 86,
+    genre_ids: [28, 80, 18]
   },
   {
     id: 4,
-    title: "Avengers: Endgame",
-    genre: "Action",
-    genreId: "28",
-    rating: 8.4,
-    year: 2019,
-    emoji: "⚡"
-  },
-  {
-    id: 5,
-    title: "The Conjuring",
-    genre: "Horror",
-    genreId: "27",
-    rating: 7.5,
-    year: 2013,
-    emoji: "👻"
-  },
-  {
-    id: 6,
-    title: "Joker",
-    genre: "Drama",
-    genreId: "18",
-    rating: 8.4,
-    year: 2019,
-    emoji: "🃏"
-  },
-  {
-    id: 7,
-    title: "Harry Potter",
-    genre: "Fantasy",
-    genreId: "14",
-    rating: 7.6,
-    year: 2001,
-    emoji: "🪄"
-  },
-  {
-    id: 8,
-    title: "Titanic",
-    genre: "Romance",
-    genreId: "10749",
-    rating: 7.9,
-    year: 1997,
-    emoji: "🚢"
-  },
-  {
-    id: 9,
-    title: "Spider-Man",
-    genre: "Adventure",
-    genreId: "12",
-    rating: 8.0,
-    year: 2002,
-    emoji: "🕷️"
-  },
-  {
-    id: 10,
-    title: "Toy Story",
-    genre: "Animation",
-    genreId: "16",
-    rating: 8.3,
-    year: 1995,
-    emoji: "🤠"
-  },
-  {
-    id: 11,
-    title: "The Hangover",
-    genre: "Comedy",
-    genreId: "35",
-    rating: 7.7,
-    year: 2009,
-    emoji: "😂"
-  },
-  {
-    id: 12,
-    title: "Gone Girl",
-    genre: "Mystery",
-    genreId: "9648",
-    rating: 8.1,
-    year: 2014,
-    emoji: "🔍"
+    title: "Avatar",
+    overview: "A marine becomes part of a new world on Pandora.",
+    poster_path: null,
+    release_date: "2009-12-18",
+    vote_average: 7.9,
+    popularity: 84,
+    genre_ids: [28, 12, 878]
   }
 ];
 
-let watchlist = JSON.parse(localStorage.getItem("movieWatchlist")) || [];
 
-const movieGrid = document.querySelector("#movieGrid");
-const watchlistGrid = document.querySelector("#watchlistGrid");
-const statusMessage = document.querySelector("#statusMessage");
+const genreNames = {
+  28: "Action",
+  12: "Adventure",
+  16: "Animation",
+  35: "Comedy",
+  80: "Crime",
+  18: "Drama",
+  14: "Fantasy",
+  27: "Horror",
+  9648: "Mystery",
+  10749: "Romance",
+  878: "Science Fiction",
+  53: "Thriller"
+};
+
+
+// Load movies from TMDB
+async function loadMovies() {
+
+  statusMessage.textContent = "Loading movies...";
 
-const filterForm = document.querySelector("#filterForm");
-const searchInput = document.querySelector("#searchInput");
-const genreSelect = document.querySelector("#genreSelect");
-const ratingInput = document.querySelector("#ratingInput");
-const ratingValue = document.querySelector("#ratingValue");
-const sortSelect = document.querySelector("#sortSelect");
-const clearFilters = document.querySelector("#clearFilters");
-
-const watchlistButton = document.querySelector("#watchlistButton");
-
-const loginForm = document.querySelector("#loginForm");
-const loginMessage = document.querySelector("#loginMessage");
-
-
-
-// ------------------------------
-// DISPLAY MOVIES
-// ------------------------------
-
-
-function displayMovies(movieList) {
-
-  movieGrid.innerHTML = "";
-
-  if (movieList.length === 0) {
-    movieGrid.innerHTML = `
-      <p class="empty-message">
-        No movies found. Try different filters.
-      </p>
-    `;
-
-    return;
-  }
-
-  movieList.forEach(movie => {
-
-    const isAdded = watchlist.some(item => item.id === movie.id);
-
-    const card = document.createElement("article");
-
-    card.className = "movie-card";
-
-    card.innerHTML = `
-      <div class="movie-poster">
-    <img src="${movie.poster}" alt="${movie.title} poster">
-</div>
-
-      <div class="movie-info">
-
-        <h3>${movie.title}</h3>
-
-        <p class="movie-meta">
-          ${movie.year} • ${movie.genre}
-        </p>
-
-        <p class="movie-rating">
-          ⭐ ${movie.rating}/10
-        </p>
-
-        <button
-          class="primary-button watch-button"
-          data-id="${movie.id}"
-        >
-          ${isAdded ? "✓ Added to Watchlist" : "+ Add to Watchlist"}
-        </button>
-
-      </div>
-    `;
-
-    movieGrid.appendChild(card);
-  });
-
-  document.querySelectorAll(".watch-button").forEach(button => {
-
-    button.addEventListener("click", () => {
-
-      const id = Number(button.dataset.id);
-
-      toggleWatchlist(id);
-
-    });
-
-  });
-}
-
-
-// ------------------------------
-// WATCHLIST
-// ------------------------------
-
-function toggleWatchlist(id) {
-
-  const movie = movies.find(movie => movie.id === id);
-
-  if (!movie) return;
-
-  const alreadyAdded = watchlist.some(item => item.id === id);
-
-  if (alreadyAdded) {
-
-    watchlist = watchlist.filter(item => item.id !== id);
-
-  } else {
-
-    watchlist.push(movie);
-
-  }
-
-  localStorage.setItem(
-    "movieWatchlist",
-    JSON.stringify(watchlist)
-  );
-
-  displayMovies(movies);
-
-  displayWatchlist();
-}
-
-
-// ------------------------------
-// DISPLAY WATCHLIST
-// ------------------------------
-
-function displayWatchlist() {
-
-  watchlistGrid.innerHTML = "";
-
-  if (watchlist.length === 0) {
-
-    watchlistGrid.innerHTML = `
-      <p class="empty-message">
-        Your watchlist is empty. Add movies you want to watch.
-      </p>
-    `;
-
-    return;
-  }
-
-  watchlist.forEach(movie => {
-
-    const card = document.createElement("article");
-
-    card.className = "movie-card";
-
-    card.innerHTML = `
-      <div class="movie-poster">
-  <img src="${movie.poster}" alt="${movie.title} poster">
-</div>
-
-      <div class="movie-info">
-
-        <h3>${movie.title}</h3>
-
-        <p class="movie-meta">
-          ${movie.year} • ${movie.genre}
-        </p>
-
-        <p class="movie-rating">
-          ⭐ ${movie.rating}/10
-        </p>
-
-        <button
-          class="clear-button remove-button"
-          data-id="${movie.id}"
-        >
-          Remove
-        </button>
-
-      </div>
-    `;
-
-    watchlistGrid.appendChild(card);
-
-  });
-
-  document.querySelectorAll(".remove-button").forEach(button => {
-
-    button.addEventListener("click", () => {
-
-      const id = Number(button.dataset.id);
-
-      watchlist = watchlist.filter(
-        movie => movie.id !== id
-      );
-
-      localStorage.setItem(
-        "movieWatchlist",
-        JSON.stringify(watchlist)
-      );
-
-      displayWatchlist();
-
-      displayMovies(movies);
-
-    });
-
-  });
-}
-
-
-// ------------------------------
-// FILTER MOVIES
-// ------------------------------
-
-function applyFilters(event) {
-
-  if (event) {
-    event.preventDefault();
-  }
-
-  const searchText =
-    searchInput.value.trim().toLowerCase();
-
-  const selectedGenres = Array.from(
-  genreSelect.selectedOptions
-).map(option => option.value);
-
-  const minimumRating =
-    Number(ratingInput.value);
-
-  const sortBy =
-    sortSelect.value;
-
-  let filteredMovies = movies.filter(movie => {
-    
-
-    const matchesSearch =
-      movie.title
-        .toLowerCase()
-        .includes(searchText);
-
-    const matchesGenre =
-
-  selectedGenres.length === 0 ||
-  selectedGenres.includes(String(movie.genreId));
-
-    const matchesRating =
-      movie.rating >= minimumRating;
-      
-
-    return (
-      matchesSearch &&
-      matchesGenre &&
-      matchesRating
-    );
-
-  });
-
-
-  // SORTING
-
-  if (sortBy === "popularity") {
-
-    filteredMovies.sort(
-      (a, b) => b.rating - a.rating
-    );
-
-  }
-
-  else if (sortBy === "release_date") {
-
-    filteredMovies.sort(
-      (a, b) => b.year - a.year
-    );
-
-  }
-
-  else if (sortBy === "rating") {
-
-    filteredMovies.sort(
-      (a, b) => b.rating - a.rating
-    );
-
-  }
-
-
-  displayMovies(filteredMovies);
-
-  statusMessage.textContent =
-   `${filteredMovies.length} movie(s) found.`;
-   const params = new URLSearchParams();
-
-if (searchText) {
-  params.set("search", searchText);
-}
-
-if (selectedGenres.length > 0) {
-  params.set("genre", selectedGenres.join(","));
-}
-
-if (minimumRating > 0) {
-  params.set("rating", minimumRating);
-}
-
-if (sortBy !== "popularity") {
-  params.set("sort", sortBy);
-}
-
-window.history.replaceState(
-  {},
-  "",
-  params.toString()
-    ? "?" + params.toString()
-    : window.location.pathname
-);
-}
-
-
-// ------------------------------
-// RATING SLIDER
-// ------------------------------
-
-ratingInput.addEventListener("input", () => {
-
-  ratingValue.textContent =
-    ratingInput.value;
-
-});
-
-
-// ------------------------------
-// FILTER FORM
-// ------------------------------
-
-filterForm.addEventListener(
-  "submit",
-  applyFilters
-);
-
-
-// ------------------------------
-// CLEAR FILTERS
-// ------------------------------
-
-
-
-clearFilters.addEventListener("click", () => {
-
-  searchInput.value = "";
-
-  genreSelect.value = "";
-
-  ratingInput.value = "0";
-
-  ratingValue.textContent = "0";
-
-  sortSelect.value = "popularity";
-
-  applyFilters();
-});
-
-
-// ------------------------------
-// WATCHLIST BUTTON
-// ------------------------------
-
-watchlistButton.addEventListener("click", () => {
-
-  document
-    .querySelector("#watchlist")
-    .scrollIntoView({
-      behavior: "smooth"
-    });
-
-});
-
-
-// ------------------------------
-// LOGIN
-// ------------------------------
-
-loginForm.addEventListener("submit", event => {
-
-  event.preventDefault();
-
-  const username =
-    document.querySelector("#username").value.trim();
-
-  const password =
-    document.querySelector("#password").value.trim();
-
-  if (!username || !password) {
-
-    loginMessage.textContent =
-      "Please enter username and password.";
-
-    return;
-
-  }
-
-  loginMessage.textContent =
-   `Welcome, ${username}! Login successful.`;
-
-});
-
-
-// ------------------------------
-// INITIAL LOAD
-// ------------------------------
-
-// RESTORE FILTERS FROM URL
-const urlParams = new URLSearchParams(window.location.search);
-
-searchInput.value = urlParams.get("search") || "";
-
-genreSelect.value = urlParams.get("genre") || "";
-
-ratingInput.value = urlParams.get("rating") || "0";
-ratingValue.textContent = ratingInput.value;
-
-sortSelect.value = urlParams.get("sort") || "popularity";
-
-applyFilters();
-
-
-displayWatchlist();
-
-statusMessage.textContent = movies.length + " movies available.";
-
-async function testTMDB() {
   try {
+
     const response = await fetch(
-      TMDB_BASE_URL + "/trending/movie/day",
+      TMDB_BASE_URL + "/trending/movie/week",
       {
         headers: {
           Authorization: "Bearer " + TMDB_TOKEN,
@@ -553,72 +99,575 @@ async function testTMDB() {
     );
 
     if (!response.ok) {
-      throw new Error("TMDB error: " + response.status);
+      throw new Error("TMDB request failed");
     }
 
     const data = await response.json();
 
-const trendingMovies = data.results.map(movie => ({
-  id: movie.id,
-  title: movie.title,
-  genre: "Movie",
-  genreId: movie.genre_ids[0] || "",
-  rating: movie.vote_average,
-  year: movie.release_date
-    ? Number(movie.release_date.slice(0, 4))
-    : 0,
-  emoji: "🎬",
-  poster: movie.poster_path
-    ? "https://image.tmdb.org/t/p/w500" + movie.poster_path
-    : ""
-}));
+    movies = data.results;
 
-movies.splice(
-  0,
-  movies.length,
-  ...trendingMovies
-);
+    statusMessage.textContent =
+      movies.length + " movies found.";
 
-displayMovies(movies);
-
-statusMessage.textContent =
- ` ${movies.length} trending movies loaded from TMDB.;`
-
-console.log(
-  "TMDB connection successful:",
-  data.results
-);
+    applyFilters();
 
   } catch (error) {
-    console.error(
-      "TMDB connection failed:",
-      error
-    );
+
+    console.log("TMDB error:", error);
+
+    statusMessage.textContent =
+      "TMDB movies could not be loaded. Showing sample movies.";
+
+    applyFilters();
   }
 }
 
-const urlSearch = urlParams.get("search");
-const urlGenre = urlParams.get("genre");
-const urlRating = urlParams.get("rating");
-const urlSort = urlParams.get("sort");
 
-if (urlSearch) {
-  searchInput.value = urlSearch;
+// Create movie card
+function createMovieCard(movie) {
+
+  const card = document.createElement("article");
+
+  card.className = "movie-card";
+
+  let poster =
+    "https://via.placeholder.com/500x750?text=No+Poster";
+
+  if (movie.poster_path) {
+
+    poster =
+      "https://image.tmdb.org/t/p/w500" +
+      movie.poster_path;
+  }
+
+  const genres = (movie.genre_ids || [])
+    .map(function(id) {
+      return genreNames[id];
+    })
+    .filter(Boolean)
+    .slice(0, 2)
+    .join(", ");
+
+  card.innerHTML =
+    '<img class="movie-poster" src="' +
+    poster +
+    '" alt="' +
+    movie.title +
+    '">' +
+
+    '<div class="movie-info">' +
+
+    '<h3>' +
+    movie.title +
+    '</h3>' +
+
+    '<p class="movie-meta">' +
+    (movie.release_date || "Unknown date") +
+    " • ⭐ " +
+    Number(movie.vote_average || 0).toFixed(1) +
+    '</p>' +
+
+    '<p class="movie-genre">' +
+    (genres || "Movie") +
+    '</p>' +
+
+    '<p class="movie-description">' +
+    (movie.overview || "No description available.") +
+    '</p>' +
+
+    '<button class="watchlist-btn" data-id="' +
+    movie.id +
+    '" type="button">' +
+    'Add to Watchlist' +
+    '</button>' +
+
+    '</div>';
+
+  return card;
 }
 
-if (urlGenre) {
-  genreSelect.value = urlGenre;
+
+// Display movies
+function displayMovies(movieList) {
+
+  movieGrid.innerHTML = "";
+
+  if (movieList.length === 0) {
+
+    movieGrid.innerHTML =
+      '<p class="empty-message">No movies found.</p>';
+
+    return;
+  }
+
+  movieList.forEach(function(movie) {
+
+    movieGrid.appendChild(
+      createMovieCard(movie)
+    );
+
+  });
+
+  addWatchlistEvents();
 }
 
-if (urlRating) {
-  ratingInput.value = urlRating;
-  ratingValue.textContent = urlRating;
+
+// Get selected genres
+function getSelectedGenres() {
+
+  return Array.from(genreSelect.selectedOptions)
+    .map(function(option) {
+      return Number(option.value);
+    });
 }
 
-if (urlSort) {
-  sortSelect.value = urlSort;
+
+// Apply filters
+function applyFilters() {
+
+  const searchText =
+    searchInput.value.trim().toLowerCase();
+
+  const minimumRating =
+    Number(ratingInput.value);
+
+  const selectedGenres =
+    getSelectedGenres();
+
+  let filteredMovies =
+    movies.filter(function(movie) {
+
+      const title =
+        (movie.title || "").toLowerCase();
+
+      const matchesSearch =
+        title.includes(searchText);
+
+      const matchesRating =
+        Number(movie.vote_average || 0) >= minimumRating;
+
+      const movieGenres =
+        movie.genre_ids || [];
+
+      const matchesGenre =
+        selectedGenres.length === 0 ||
+        selectedGenres.some(function(genre) {
+          return movieGenres.includes(genre);
+        });
+
+      return (
+        matchesSearch &&
+        matchesRating &&
+        matchesGenre
+      );
+    });
+
+
+  if (sortSelect.value === "rating") {
+
+    filteredMovies.sort(function(a, b) {
+
+      return (
+        Number(b.vote_average || 0) -
+        Number(a.vote_average || 0)
+      );
+
+    });
+
+  } else if (sortSelect.value === "release_date") {
+
+    filteredMovies.sort(function(a, b) {
+
+      return new Date(b.release_date || 0) -
+        new Date(a.release_date || 0);
+
+    });
+
+  } else {
+
+    filteredMovies.sort(function(a, b) {
+
+      return (
+        Number(b.popularity || 0) -
+        Number(a.popularity || 0)
+      );
+
+    });
+  }
+
+
+  displayMovies(filteredMovies);
+
+  updateURL();
 }
 
-applyFilters();
 
-testTMDB();
+// Add watchlist events
+function addWatchlistEvents() {
+
+  const buttons =
+    document.querySelectorAll(".watchlist-btn");
+
+  buttons.forEach(function(button) {
+
+    button.addEventListener("click", function() {
+
+      const movieId =
+        Number(button.dataset.id);
+
+      addToWatchlist(movieId);
+
+    });
+
+  });
+}
+
+
+// Get watchlist
+function getWatchlist() {
+
+  return JSON.parse(
+    localStorage.getItem("movieWatchlist") || "[]"
+  );
+}
+
+
+// Add to watchlist
+function addToWatchlist(movieId) {
+
+  const watchlist =
+    getWatchlist();
+
+  if (!watchlist.includes(movieId)) {
+
+    watchlist.push(movieId);
+
+    localStorage.setItem(
+      "movieWatchlist",
+      JSON.stringify(watchlist)
+    );
+
+    showWatchlist();
+
+    alert("Movie added to your watchlist!");
+
+  } else {
+
+    alert("Movie is already in your watchlist.");
+  }
+}
+
+
+// Show watchlist
+function showWatchlist() {
+
+  watchlistGrid.innerHTML = "";
+
+  const watchlist =
+    getWatchlist();
+
+  const savedMovies =
+    movies.filter(function(movie) {
+
+      return watchlist.includes(movie.id);
+
+    });
+
+
+  if (savedMovies.length === 0) {
+
+    watchlistGrid.innerHTML =
+      '<p class="empty-message">' +
+      'Your watchlist is empty.' +
+      '</p>';
+
+    return;
+  }
+
+
+  savedMovies.forEach(function(movie) {
+
+    const card =
+      createMovieCard(movie);
+
+    const button =
+      card.querySelector(".watchlist-btn");
+
+    button.textContent = "Remove";
+
+    button.addEventListener(
+      "click",
+      function() {
+
+        removeFromWatchlist(movie.id);
+
+      }
+    );
+
+    watchlistGrid.appendChild(card);
+  });
+}
+
+
+// Remove from watchlist
+function removeFromWatchlist(movieId) {
+
+  let watchlist =
+    getWatchlist();
+
+  watchlist =
+    watchlist.filter(function(id) {
+
+      return id !== movieId;
+
+    });
+
+  localStorage.setItem(
+    "movieWatchlist",
+    JSON.stringify(watchlist)
+  );
+
+  showWatchlist();
+}
+
+
+// Update URL
+function updateURL() {
+
+  const params =
+    new URLSearchParams();
+
+  const search =
+    searchInput.value.trim();
+
+  const genres =
+    getSelectedGenres();
+
+  const rating =
+    ratingInput.value;
+
+  const sort =
+    sortSelect.value;
+
+
+  if (search) {
+    params.set("search", search);
+  }
+
+  if (genres.length > 0) {
+    params.set("genres", genres.join(","));
+  }
+
+  if (rating !== "0") {
+    params.set("rating", rating);
+  }
+
+  if (sort !== "popularity") {
+    params.set("sort", sort);
+  }
+
+
+  const query =
+    params.toString();
+
+  const newURL =
+    query
+      ? window.location.pathname + "?" + query
+      : window.location.pathname;
+
+  window.history.replaceState(
+    {},
+    "",
+    newURL
+  );
+}
+
+
+// Restore filters from URL
+function restoreFiltersFromURL() {
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  const search =
+    params.get("search");
+
+  const genres =
+    params.get("genres");
+
+  const rating =
+    params.get("rating");
+
+  const sort =
+    params.get("sort");
+
+
+  if (search) {
+    searchInput.value = search;
+  }
+
+
+  if (genres) {
+
+    const selectedGenres =
+      genres.split(",").map(Number);
+
+    Array.from(
+      genreSelect.options
+    ).forEach(function(option) {
+
+      option.selected =
+        selectedGenres.includes(
+          Number(option.value)
+        );
+
+    });
+  }
+
+
+  if (rating) {
+
+    ratingInput.value =
+      rating;
+
+    ratingValue.textContent =
+      rating;
+  }
+
+
+  if (sort) {
+    sortSelect.value = sort;
+  }
+}
+
+
+// Live search
+searchInput.addEventListener(
+  "input",
+  function() {
+    applyFilters();
+  }
+);
+
+
+// Rating slider
+ratingInput.addEventListener(
+  "input",
+  function() {
+
+    ratingValue.textContent =
+      ratingInput.value;
+
+    applyFilters();
+  }
+);
+
+
+// Filter form
+filterForm.addEventListener(
+  "submit",
+  function(event) {
+
+    event.preventDefault();
+
+    applyFilters();
+  }
+);
+
+
+// Genre filter
+genreSelect.addEventListener(
+  "change",
+  function() {
+
+    applyFilters();
+  }
+);
+
+
+// Sorting
+sortSelect.addEventListener(
+  "change",
+  function() {
+
+    applyFilters();
+  }
+);
+
+
+// Clear filters
+clearFilters.addEventListener(
+  "click",
+  function() {
+
+    searchInput.value = "";
+
+    Array.from(
+      genreSelect.options
+    ).forEach(function(option) {
+
+      option.selected = false;
+
+    });
+
+    ratingInput.value = 0;
+
+    ratingValue.textContent = "0";
+
+    sortSelect.value = "popularity";
+
+    window.history.replaceState(
+      {},
+      "",
+      window.location.pathname
+    );
+
+    applyFilters();
+  }
+);
+
+
+// Watchlist navigation
+watchlistButton.addEventListener(
+  "click",
+  function() {
+
+    document
+      .getElementById("watchlist")
+      .scrollIntoView({
+        behavior: "smooth"
+      });
+
+    showWatchlist();
+  }
+);
+
+
+// Login form
+loginForm.addEventListener(
+  "submit",
+  function(event) {
+
+    event.preventDefault();
+
+    loginMessage.textContent =
+      "Login form submitted successfully.";
+
+    loginMessage.classList.add(
+      "success-message"
+    );
+  }
+);
+
+
+// Start website
+restoreFiltersFromURL();
+
+ratingValue.textContent =
+  ratingInput.value;
+
+showWatchlist();
+
+loadMovies();
