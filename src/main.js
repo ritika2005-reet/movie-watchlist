@@ -107,7 +107,7 @@ async function loadMovies() {
     movies = data.results;
 
     statusMessage.textContent =
-      movies.length + " movies found.";
+      movies.length + " movies loaded.";
 
     applyFilters();
 
@@ -295,6 +295,8 @@ function applyFilters() {
     });
   }
 
+statusMessage.textContent =
+filteredMovies.length + " moviesfound.";
 
   displayMovies(filteredMovies);
 
